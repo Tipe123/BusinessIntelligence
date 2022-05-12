@@ -17,8 +17,8 @@ from ProductOrders.products_reseller_data import product_figure_reseller
     # the function that contains reseller data
 
     # the function that contains offline sale amount data
-from ProductSales.product_sales_offline import sales_offline_figure
-from ProductSales.product_sales_online import sales_online_figure
+from ProductSales.product_sales_offline import sales_offline_figure ,sales_yaerly_offline_figure
+from ProductSales.product_sales_online import sales_online_figure ,sales_yaerly_online_figure
 
 
 
@@ -125,9 +125,28 @@ def render_page_content(pathname):
         html.Div(
             className="row",
             children=[
+                html.Div(
+                    className="col-md-5 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    children=[
+                        
+                       sales_yaerly_online_figure()
+                    ]
+                ),
+                html.Div(
+                    className="col-md-5 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    children=[
+                       sales_yaerly_offline_figure()
+                    ]
+                ),
+                
+            ]
+        ),
+        html.Div(
+            className="row",
+            children=[
 
                 html.Div(
-                    className="w-50 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    className="w-50 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3 bg-dark text-white",
                     children=[
                         all_sales_figure()
                     ]

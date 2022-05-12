@@ -36,6 +36,29 @@ dataFor2013 = {
     "SalesAmount": []
 }
 
+dataSalesYears= {
+    "Date": [],
+    "SalesAmount": []
+}
+
+def readYearlyData(conn , data):
+    cursor = conn.cursor()
+    cursor.execute(f""" SELECT 
+	SUM(FRS.SalesAmount) salesAmount,
+	DD.CalendarYear
+    FROM [dbo].[FactInternetSales] FRS
+    JOIN [dbo].[DimProduct] DP ON FRS.ProductKey = DP.ProductKey
+    JOIN [dbo].[DimDate] DD ON FRS.OrderDateKey=DD.DateKey OR FRS.ShipDateKey=DD.DateKey OR FRS.DueDateKey=DD.DateKey
+    GROUP BY DD.CalendarYear """)
+    for row in cursor:
+        for i in range(len(row)):
+            if(i%2 == 0):
+                data["SalesAmount"].append(row[i])
+            else:
+                data["Date"].append(row[i])
+    return data
+
+readYearlyData(conn, dataSalesYears)
 
 def readData(conn , data,year):
     cursor = conn.cursor()
@@ -60,6 +83,7 @@ def readData(conn , data,year):
                     data["Date"].append(row[i])
     
     return data
+
 readData(conn , dataFor2011,2011)
 readData(conn , dataFor2012,2012)
 readData(conn , dataFor2013,2013)
@@ -103,8 +127,36 @@ def sales_online_figure():
         ]
     )
 
+def sales_yaerly_online_figure():
+    return html.Div(
+        [
+            html.Div(
+                children=[
+                    html.H1("Online Sales Amount Per Year"),
+                ],
+                className="text-center",
+            ),
+            
+            dcc.Graph(
+                id='order-quantity-graph',
+                figure={
+                    'data': [
+                        {'x': dataSalesYears['Date'],
+                        'y': dataSalesYears['SalesAmount'],
+                        'type': 'line',
+                        'name': 'Sales Amount Per Year'},
+                    ],
+                    'layout': {
+                        'title': 'Sales Amount Per Yaer for 2010-2014',
+                        'xaxis': {'title': 'Days'},
+                        'yaxis': {'title': 'Sales Amount'},
+                        
+                    }
+                },
+            )
+        ]
+    )
 
 
-if __name__ == '__main__':
-    app.run_server(port=8080,debug=True)
+
 

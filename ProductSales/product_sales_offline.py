@@ -36,6 +36,29 @@ dataFor2013 = {
     "SalesAmount": []
 }
 
+dataSalesYears= {
+    "Date": [],
+    "SalesAmount": []
+}
+
+def readYearlyData(conn , data):
+    cursor = conn.cursor()
+    cursor.execute(f""" SELECT 
+	SUM(FRS.SalesAmount) salesAmount,
+	DD.CalendarYear
+    FROM [dbo].[FactResellerSales] FRS
+    JOIN [dbo].[DimProduct] DP ON FRS.ProductKey = DP.ProductKey
+    JOIN [dbo].[DimDate] DD ON FRS.OrderDateKey=DD.DateKey OR FRS.ShipDateKey=DD.DateKey OR FRS.DueDateKey=DD.DateKey
+    GROUP BY DD.CalendarYear """)
+    for row in cursor:
+        for i in range(len(row)):
+            if(i%2 == 0):
+                data["SalesAmount"].append(row[i])
+            else:
+                data["Date"].append(row[i])
+    return data
+
+readYearlyData(conn, dataSalesYears)
 
 def readData(conn , data,year):
     cursor = conn.cursor()
@@ -105,6 +128,33 @@ def sales_offline_figure():
 
 
 
-if __name__ == '__main__':
-    app.run_server(port=8080,debug=True)
+def sales_yaerly_offline_figure():
+    return html.Div(
+        [
+            html.Div(
+                children=[
+                    html.H1("Offline Sales Amount Per Year"),
+                ],
+                className="text-center",
+            ),
+            
+            dcc.Graph(
+                id='order-quantity-graph',
+                figure={
+                    'data': [
+                        {'x': dataSalesYears['Date'],
+                        'y': dataSalesYears['SalesAmount'],
+                        'type': 'line',
+                        'name': 'Sales Amount Per Year'},
+                    ],
+                    'layout': {
+                        'title': 'Sales Amount Per Yaer for 2010-2014',
+                        'xaxis': {'title': 'Days'},
+                        'yaxis': {'title': 'Sales Amount'},
+                        
+                    }
+                },
+            )
+        ]
+    )
 
