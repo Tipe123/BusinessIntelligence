@@ -39,8 +39,8 @@ def readData(conn , data,year):
     cursor = conn.cursor()
     cursor.execute(f"""
      SELECT 
-			sum(fis.OrderQuantity) as quantity_per_day,
-			dd.DayNumberOfYear
+		sum(fis.OrderQuantity) as quantity_per_day,
+		dd.DayNumberOfYear
 		FROM [dbo].[FactInternetSales] FIS
 		JOIN [dbo].[DimProduct] DP ON DP.ProductKey = FIS.ProductKey
 		 JOIN [dbo].[DimDate] DD ON DD.DateKey = FIS.OrderDateKey or DD.DateKey = FIS.DueDateKey or DD.DateKey = FIS.ShipDateKey
