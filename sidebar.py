@@ -14,7 +14,7 @@ import pyodbc
     # the function that contains online data
 from products_online_data import product_figure
     # the function that contains reseller data
-
+from products_reseller_data import product_figure_reseller
 # data source: https://www.kaggle.com/chubak/iranian-students-from-1968-to-2017
 # data owner: Chubak Bidpaa
 df = pd.read_csv('https://raw.githubusercontent.com/Coding-with-Adam/Dash-by-Plotly/master/Bootstrap/Side-Bar/iranian_students.csv')
@@ -88,7 +88,7 @@ def render_page_content(pathname):
                 html.Div(
                     className="col-md-6",
                     children=[
-                        product_figure()
+                        product_figure_reseller()
                     ]
                 ),
                 

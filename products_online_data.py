@@ -5,21 +5,15 @@ from dash import html
 # import pandas as pd
 # import plotly.graph_objs as go
 # from dash.dependencies import Input, Output
-import pyodbc
+from model import connection
 import dash_bootstrap_components as dbc
 app = dash.Dash(
     external_stylesheets = [dbc.themes.BOOTSTRAP]
 )
-def Products():
-    pass
 
 
-conn = pyodbc.connect(
-    "Driver={SQL Server Native Client 11.0};"
-    "Server=L451\EASYTEST;"
-    "Database=AdventureWorksDW2019;"
-    "Trusted_Connection=yes;"
-)
+
+conn = connection()
 
 # Create an empty dictionary to store the data
 
@@ -47,7 +41,7 @@ def readData(conn , data,year):
      SELECT 
 			sum(fis.OrderQuantity) as quantity_per_day,
 			dd.DayNumberOfYear
-		FROM [dbo].[FactResellerSales] FIS
+		FROM [dbo].[FactInternetSales] FIS
 		JOIN [dbo].[DimProduct] DP ON DP.ProductKey = FIS.ProductKey
 		 JOIN [dbo].[DimDate] DD ON DD.DateKey = FIS.OrderDateKey or DD.DateKey = FIS.DueDateKey or DD.DateKey = FIS.ShipDateKey
 
