@@ -6,18 +6,21 @@ from dash import dcc
 
 import plotly.express as px
 from dash.dependencies import Input, Output
-import pandas as pd
-import pyodbc
+
 
 # File imports for other functions
-
+from ProductSales.salesType import all_sales_figure
     # the function that contains online data
-from products_online_data import product_figure
+from ProductOrders.products_online_data import product_figure
     # the function that contains reseller data
-from products_reseller_data import product_figure_reseller
-# data source: https://www.kaggle.com/chubak/iranian-students-from-1968-to-2017
-# data owner: Chubak Bidpaa
-df = pd.read_csv('https://raw.githubusercontent.com/Coding-with-Adam/Dash-by-Plotly/master/Bootstrap/Side-Bar/iranian_students.csv')
+from ProductOrders.products_reseller_data import product_figure_reseller
+    # the function that contains reseller data
+
+    # the function that contains offline sale amount data
+from ProductSales.product_sales_offline import sales_offline_figure
+from ProductSales.product_sales_online import sales_online_figure
+
+
 
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -45,11 +48,11 @@ sidebar = html.Div(
         html.H2("Group 5", className="display-4 font-weight-bold text-center"),
         html.Hr(),
         html.P(
-            "DashBoard For Database Project ", className="lead"
+            "DashBoard For Database Project ", className="lead mt-4 mb-4"
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Products", href="/", active="exact"),
+                dbc.NavLink("Product Orders", href="/", active="exact"),
                 dbc.NavLink("Sales", href="/Sales", active="exact"),
                 dbc.NavLink("Orders", href="/Orders", active="exact"),
             ],
@@ -58,6 +61,7 @@ sidebar = html.Div(
         ),
     ],
     style=SIDEBAR_STYLE,
+    className="bg-dark text-white",
 )
 
 content = html.Div(id="page-content", children=[], style=CONTENT_STYLE)
@@ -88,7 +92,44 @@ def render_page_content(pathname):
                 html.Div(
                     className="col-md-6",
                     children=[
-                        product_figure_reseller()
+                         product_figure_reseller()
+                    ]
+                ),
+                
+            ]
+        ),
+        
+    ]
+        
+    elif pathname == "/Sales":
+        return[
+        html.Div(
+            className="row",
+            children=[
+                html.Div(
+                    className="col-md-5 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    children=[
+                        
+                       sales_online_figure()
+                    ]
+                ),
+                html.Div(
+                    className="col-md-5 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    children=[
+                       sales_offline_figure()
+                    ]
+                ),
+                
+            ]
+        ),
+        html.Div(
+            className="row",
+            children=[
+
+                html.Div(
+                    className="w-50 card shadow p-3 mb-5 bg-body rounded align-middle m-auto rounded-3",
+                    children=[
+                        all_sales_figure()
                     ]
                 ),
                 
@@ -96,25 +137,9 @@ def render_page_content(pathname):
         )
        
     ]
-        
-    elif pathname == "/Sales":
-        return [
-                html.H1('Grad School in Iran',
-                        style={'textAlign':'center'}),
-                        # Begining of the graph
-                dcc.Graph(id='bargraph',
-                         figure=px.bar(df, barmode='group', x='Years',
-                         y=['Girls Grade School', 'Boys Grade School'])
-                         )
-                         #  End of the graph
-                ]
     elif pathname == "/Orders":
         return [
-                html.H1('High School in Iran',
-                        style={'textAlign':'center'}),
-                dcc.Graph(id='bargraph',
-                         figure=px.bar(df, barmode='group', x='Years',
-                         y=['Girls High School', 'Boys High School']))
+                # sales_all_figure()
                 ]
     # If the user tries to reach a different page, return a 404 message
     return dbc.Jumbotron(
@@ -128,3 +153,5 @@ def render_page_content(pathname):
 
 if __name__=='__main__':
     app.run_server(debug=True, port=8000)
+
+

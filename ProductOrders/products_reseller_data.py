@@ -84,15 +84,15 @@ def product_figure_reseller():
                     'data': [
                         {'x': dataFor2011['Date'],
                         'y': dataFor2011['OrderQuantity'],
-                        'type': 'line',
+                        'type': 'bar',
                         'name': 'order quantity Per Day for 2011'},
                         {'x': dataFor2012['Date'],
                         'y': dataFor2012['OrderQuantity'],
-                        'type': 'line',
+                        'type': 'bar',
                         'name': 'order quantity Per Day for 2012'},
                         {'x': dataFor2013['Date'],
                         'y': dataFor2013['OrderQuantity'],
-                        'type': 'line',
+                        'type': 'bar',
                         'name': 'order quantity Per Day for 2013'},
                     ],
                     'layout': {
